@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
+
+.page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: clamp(4rem, 8vh, 5rem) clamp(1rem, 4vw, 2.5rem) clamp(3rem, 6vh, 4rem);
+    gap: clamp(1.5rem, 3vh, 2.5rem);
+    background: #0e0d0b;
+    color: #e8e2d9;
+    font-family: 'Crimson Pro', Georgia, serif;
+    position: relative;
+}
+
+.page::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 60% at 20% 50%, rgba(60,45,20,0.3) 0%, transparent 70%),
+        radial-gradient(ellipse 60% 80% at 80% 50%, rgba(30,20,10,0.35) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.page > * {
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Back link ── */
+.backLink {
+    position: fixed;
+    top: clamp(1rem, 3vh, 1.5rem);
+    left: clamp(1rem, 3vw, 2rem);
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-style: italic;
+    font-size: clamp(0.7rem, 2vw, 0.8rem);
+    letter-spacing: 0.12em;
+    color: #8a7f6e;
+    text-decoration: none;
+    transition: color 0.2s;
+    z-index: 10;
+}
+
+.backLink:hover { color: #c8b99a; }
+
+/* ── Header ── */
+.header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    width: 100%;
+    max-width: 720px;
+}
+
+.levelBadge {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(0.55rem, 1.5vw, 0.65rem);
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    color: #6b5e45;
+    background-color: #a89880;
+    padding: 0.15rem 0.5rem;
+    border-radius: 1px;
+}
+
+.title {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 600;
+    font-size: clamp(1.4rem, 4vw, 2.2rem);
+    letter-spacing: 0.06em;
+    color: #f0ebe0;
+    line-height: 1;
+}
+
+.subtitle {
+    font-style: italic;
+    font-size: clamp(0.7rem, 2vw, 0.82rem);
+    color: #5e5649;
+    letter-spacing: 0.1em;
+}
+
+/* ── Loading ── */
+.loading {
+    font-style: italic;
+    font-size: clamp(0.8rem, 2vw, 0.95rem);
+    color: #8a7f6e;
+    letter-spacing: 0.1em;
+    margin-top: 4rem;
+}
+
+/* ── Table ── */
+.table {
+    width: 100%;
+    max-width: 720px;
+    border-collapse: collapse;
+}
+
+.th {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(0.55rem, 1.4vw, 0.65rem);
+    font-weight: 400;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #7a6f5e;
+    text-align: left;
+    padding: 0 0.75rem 0.6rem 0.75rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.th:first-child { padding-left: 0; }
+.th:last-child { text-align: right; padding-right: 0; }
+
+.row {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    opacity: 0;
+    animation: fadeIn 0.35s ease forwards;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+
+.row:hover { background: rgba(200,185,154,0.07); }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.tdKanji {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 600;
+    font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+    color: #f0ebe0;
+    padding: clamp(0.55rem, 1.5vh, 0.8rem) 0.75rem clamp(0.55rem, 1.5vh, 0.8rem) 0;
+    white-space: nowrap;
+    width: 1%;  /* shrink to content */
+}
+
+.tdKana {
+    font-family: 'Noto Serif JP', serif;
+    font-weight: 300;
+    font-size: clamp(0.72rem, 1.8vw, 0.85rem);
+    color: #a89880;
+    padding: clamp(0.55rem, 1.5vh, 0.8rem) 0.75rem;
+    white-space: nowrap;
+    width: 1%;
+}
+
+.dash { color: #3d3830; }
+
+.tdMeaning {
+    font-style: italic;
+    font-size: clamp(0.75rem, 1.8vw, 0.88rem);
+    color: #7a6f5e;
+    padding: clamp(0.55rem, 1.5vh, 0.8rem) 0.75rem;
+    /* truncate long meanings */
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ── Pagination ── */
+.pagination {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.5rem;
+}
+
+.pageNumbers {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.pageBtn {
+    font-family: 'Crimson Pro', Georgia, serif;
+    font-size: clamp(0.65rem, 1.8vw, 0.75rem);
+    letter-spacing: 0.1em;
+    padding: 0.3rem 0.6rem;
+    border-radius: 1px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 1px solid rgba(200,185,154,0.2);
+    color: #7a6f5e;
+    background: transparent;
+}
+
+.pageBtn:hover:not(:disabled) {
+    border-color: rgba(200,185,154,0.5);
+    color: #c8b99a;
+}
+
+.pageBtn:disabled {
+    opacity: 0.2;
+    cursor: not-allowed;
+}
+
+.pageBtnActive {
+    border-color: rgba(200,185,154,0.45);
+    color: #c8b99a;
+    background: rgba(200,185,154,0.08);
+}
+
+.pageBtnNav {
+    letter-spacing: 0.08em;
+}
+
+.ellipsis {
+    font-size: 0.75rem;
+    color: #3d3830;
+    padding: 0 0.2rem;
+    user-select: none;
+}

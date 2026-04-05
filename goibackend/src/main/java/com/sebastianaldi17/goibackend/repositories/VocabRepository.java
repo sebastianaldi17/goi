@@ -1,6 +1,9 @@
 package com.sebastianaldi17.goibackend.repositories;
 
+import com.sebastianaldi17.goibackend.dtos.VocabCountByLevelDto;
 import com.sebastianaldi17.goibackend.models.Vocab;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,39 +13,25 @@ import java.util.List;
 
 @Repository
 public interface VocabRepository extends JpaRepository<Vocab, Long> {
-    @Query("SELECT MIN(v.id) FROM vocabs v WHERE v.level = :level")
-    Long findMinIdByLevel(
-            @Param("level") String level
-    );
-
-    @Query("SELECT MAX(v.id) FROM vocabs v WHERE v.level = :level")
-    Long findMaxIdByLevel(
-            @Param("level") String level
-    );
-
     @Query("""
             SELECT v
             FROM vocabs v
             WHERE v.level = :level
-            AND v.id >= :randomId
+            ORDER BY RANDOM()
             LIMIT :count
             """)
     List<Vocab> findRandomByLevel(
             @Param("level") String level,
-            @Param("randomId") Long randomId,
             @Param("count") Long count
     );
 
+    Page<Vocab> findByLevel(String level, Pageable pageable);
+
     @Query("""
-            SELECT v
-            FROM vocabs v
-            WHERE v.level = :level
-            AND v.id < :randomId
-            LIMIT :count
+            SELECT level, count(id) AS count
+            FROM vocabs
+            GROUP BY level
+            ORDER BY level DESC
             """)
-    List<Vocab> findRandomByLevelWrapAround(
-            @Param("level") String level,
-            @Param("randomId") Long randomId,
-            @Param("count") Long count
-    );
+    List<VocabCountByLevelDto> findGroupedCount();
 }

@@ -13,7 +13,6 @@ import java.util.List;
 public class Vocab {
     @Id
     @GeneratedValue
-    @JsonIgnore
     private Long id;
 
     private String kanji;
