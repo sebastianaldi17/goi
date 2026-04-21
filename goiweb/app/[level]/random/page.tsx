@@ -22,30 +22,34 @@ export default function RandomPage() {
     useEffect(() => {
         if (level === "") return;
 
+        let cancelled = false;
+
         const initializeVocabs = async () => {
             try {
                 const fetchedVocabs = await BackendApi.fetchRandomVocabsByLevel(level.toUpperCase());
-                setVocabs(fetchedVocabs.vocabs);
-
-                if (fetchedVocabs.vocabs.length === 0) {
-                    alert("No vocab found for this level.");
+                if (!cancelled) {
+                    setVocabs(fetchedVocabs.vocabs);
+                    if (fetchedVocabs.vocabs.length === 0) {
+                        alert("No vocab found for this level.");
+                    }
                 }
             } catch (error) {
-                alert(error);
-                console.error(error);
+                if (!cancelled) {
+                    alert(error);
+                    console.error(error);
+                }
             }
         };
 
         initializeVocabs();
+        return () => { cancelled = true; };
     }, [level]);
 
     function go(next: number) {
-        // 1. Close all revealed panels
         setShowKana(false);
         setShowDefs(false);
         setTransitioning(true);
 
-        // 2. Wait for CSS transition to finish, then swap the word
         setTimeout(() => {
             setIndex(next);
             setTransitioning(false);
@@ -61,6 +65,14 @@ export default function RandomPage() {
     const isFirst = index === 0;
     const isLast = index === total - 1;
     const sameAsKanji = vocab.kanji === vocab.kana;
+    const usuallyKana = vocab.definitions.some(def =>
+        def.tags.some(tag => tag.toLowerCase().includes("usually written using kana"))
+    );
+
+    // When usuallyKana: hero shows kana, "show reading" reveals kanji
+    // Otherwise:        hero shows kanji, "show reading" reveals kana
+    const heroText    = usuallyKana ? vocab.kana  : vocab.kanji;
+    const revealText  = usuallyKana ? vocab.kanji : vocab.kana;
 
     return (
         <main className={styles.page}>
@@ -76,16 +88,18 @@ export default function RandomPage() {
 
             {/* ── Card ── */}
             <div className={styles.card}>
-                {/* Kanji */}
+                {/* Hero character */}
                 <div className={styles.kanjiBlock}>
                     <span className={styles.levelBadge}>{vocab.level}</span>
-                    <p className={styles.kanji}>{vocab.kanji}</p>
+                    <p className={styles.kanji}>{heroText}</p>
                 </div>
 
-                {/* Kana */}
-                <div className={`${styles.revealBlock} ${showKana && !transitioning ? styles.revealed : ""}`}>
-                    <p className={styles.kana}>{vocab.kana}</p>
-                </div>
+                {/* Revealed reading (kanji or kana depending on usuallyKana) */}
+                {!sameAsKanji && (
+                    <div className={`${styles.revealBlock} ${showKana && !transitioning ? styles.revealed : ""}`}>
+                        <p className={styles.kana}>{revealText}</p>
+                    </div>
+                )}
 
                 {/* Definitions & Examples */}
                 <div className={`${styles.revealBlock} ${styles.defsBlock} ${showDefs && !transitioning ? styles.revealed : ""}`}>
@@ -93,9 +107,14 @@ export default function RandomPage() {
                         <div key={di} className={styles.definition}>
                             <p className={styles.pos}>
                                 {def.parts_of_speech.join(" · ")}
-                                {def.tags.length > 0 && (
-                                    <span className={styles.tag}> [{def.tags.join(", ")}]</span>
-                                )}
+                                {def.tags.length > 0 && def.tags.map((tag, ti) => {
+                                    const isKanaTag = tag.toLowerCase().includes("usually written using kana");
+                                    return (
+                                        <span key={ti} className={isKanaTag ? styles.tagKana : styles.tag}>
+                                            {" "}[{tag}]
+                                        </span>
+                                    );
+                                })}
                             </p>
                             <p className={styles.meanings}>
                                 {`${di + 1}. ` + def.meanings.join("; ")}
@@ -127,7 +146,10 @@ export default function RandomPage() {
                         onClick={() => setShowKana(v => !v)}
                         disabled={transitioning}
                     >
-                        {showKana ? "hide reading" : "show reading"}
+                        {showKana
+                            ? "hide reading"
+                            : usuallyKana ? "show kanji" : "show reading"
+                        }
                     </button>
                 )}
                 <button

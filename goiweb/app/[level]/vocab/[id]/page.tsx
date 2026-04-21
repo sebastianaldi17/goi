@@ -17,10 +17,23 @@ export default function VocabDetailPage() {
 
     useEffect(() => {
         if (!id) return;
-        BackendApi.fetchVocabById(id)
-            .then(setVocab)
-            .catch(console.error)
-            .finally(() => setLoading(false));
+
+        let cancelled = false;
+
+        const load = async () => {
+            setLoading(true);
+            try {
+                const result = await BackendApi.fetchVocabById(id);
+                if (!cancelled) setVocab(result);
+            } catch (err) {
+                if (!cancelled) console.error(err);
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        };
+
+        load();
+        return () => { cancelled = true; };
     }, [id]);
 
     if (loading) {
@@ -43,8 +56,11 @@ export default function VocabDetailPage() {
 
     const sameAsKanji = vocab.kanji === vocab.kana;
     const levelMismatch = vocab.level.toUpperCase() !== level.toUpperCase();
+    const usuallyKana = vocab.definitions.some(def =>
+        def.tags.some(tag => tag.toLowerCase().includes("usually written using kana"))
+    );
     const sortedExamples = [...vocab.examples]
-        .sort((a, b) => a.japanese.length - b.japanese.length)
+        .sort((a, b) => a.japanese.length - b.japanese.length);
 
     return (
         <main className={styles.page}>
@@ -58,9 +74,16 @@ export default function VocabDetailPage() {
                     </p>
                 )}
                 <span className={styles.levelBadge}>{vocab.level}</span>
-                <h1 className={styles.kanji}>{vocab.kanji}</h1>
-                {!sameAsKanji && (
-                    <p className={styles.kana}>{vocab.kana}</p>
+                {usuallyKana ? (
+                    <>
+                        <h1 className={styles.kanji}>{vocab.kana}</h1>
+                        {!sameAsKanji && <p className={styles.kana}>{vocab.kanji}</p>}
+                    </>
+                ) : (
+                    <>
+                        <h1 className={styles.kanji}>{vocab.kanji}</h1>
+                        {!sameAsKanji && <p className={styles.kana}>{vocab.kana}</p>}
+                    </>
                 )}
             </header>
 
@@ -72,9 +95,15 @@ export default function VocabDetailPage() {
                         <div key={di} className={styles.definition}>
                             <p className={styles.pos}>
                                 {def.parts_of_speech.join(" · ")}
-                                {def.tags.length > 0 && (
-                                    <span className={styles.tag}> [{def.tags.join(", ")}]</span>
-                                )}
+                                {def.tags.length > 0 && def.tags.map((tag, ti) => {
+                                    const isKanaTag = tag.toLowerCase().includes("usually written using kana");
+                                    return (
+                                        <span
+                                            key={ti}
+                                            className={isKanaTag ? styles.tagKana : styles.tag}
+                                        > [{tag}]</span>
+                                    );
+                                })}
                             </p>
                             <ol className={styles.meanings}>
                                 {def.meanings.map((m, mi) => (

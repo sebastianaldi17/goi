@@ -33,7 +33,7 @@ async function main() {
                 throw new Error("No rows found");
             }
             for (const row of rows) {
-                await new Promise(resolve => setTimeout(resolve, 100)); // To avoid rate limiting
+                await new Promise(resolve => setTimeout(resolve, 250)); // To avoid rate limiting
                 const kanji = (row.get("Kanji") as string).trim();
                 const kana = (row.get("Kana") as string).trim();
                 const level = (row.get("Level") as string).trim();

@@ -1,9 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;600&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap');
 
-/* ── Page shell ──
-   min-height instead of height so the page can grow when details expand.
-   overflow-y: auto allows scrolling when content exceeds the viewport.
-*/
+/* ── Page shell ── */
 .page {
     min-height: 100vh;
     overflow-y: auto;
@@ -19,7 +16,6 @@
     font-family: 'Crimson Pro', Georgia, serif;
 }
 
-/* fixed so the gradient doesn't scroll away with the content */
 .page::before {
     content: '';
     position: fixed;
@@ -31,7 +27,6 @@
     z-index: 0;
 }
 
-/* Bring all direct children above the fixed overlay */
 .page>* {
     position: relative;
     z-index: 1;
@@ -45,7 +40,7 @@
     letter-spacing: 0.1em;
 }
 
-/* ── Back link — fixed so it stays visible while scrolling ── */
+/* ── Back link ── */
 .backLink {
     position: fixed;
     top: clamp(1rem, 3vh, 1.5rem);
@@ -60,9 +55,7 @@
     z-index: 10;
 }
 
-.backLink:hover {
-    color: #c8b99a;
-}
+.backLink:hover { color: #c8b99a; }
 
 /* ── Progress ── */
 .progress {
@@ -78,9 +71,7 @@
     color: #c8b99a;
 }
 
-.progressSep {
-    color: #5e5649;
-}
+.progressSep { color: #5e5649; }
 
 /* ── Card ── */
 .card {
@@ -95,7 +86,6 @@
     padding: clamp(1.5rem, 4vh, 2.5rem) clamp(1.2rem, 4vw, 2rem);
     background: rgba(255, 255, 255, 0.02);
     container-type: inline-size;
-    /* enables cqi units below */
 }
 
 /* ── Kanji block ── */
@@ -129,9 +119,7 @@
     margin-top: 0.5rem;
 }
 
-/* ── Reveal blocks ──
-   TRANSITION_MS in page.tsx (400) must match the transition duration here (0.4s).
-*/
+/* ── Reveal blocks ── */
 .revealBlock {
     width: 100%;
     max-height: 0;
@@ -158,15 +146,13 @@
     letter-spacing: 0.1em;
 }
 
-/* Defs block extra styling when open */
+/* Defs block */
 .defsBlock.revealed {
     margin-top: 0.25rem;
     padding-top: 0.75rem;
     border-top: 1px solid rgba(255, 255, 255, 0.06);
     align-items: flex-start;
     gap: 1rem;
-    /* Cap height and scroll internally so long definition lists don't push
-     the toggle/nav buttons off-screen */
     max-height: 55vh;
     overflow-y: auto;
     scrollbar-width: thin;
@@ -195,13 +181,15 @@
     letter-spacing: 0.05em;
 }
 
-.meanings {
-    display: flex;
-    flex-direction: column;
-    gap: 0.2rem;
+.tagKana {
+    color: #8aab80;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid rgba(138, 171, 128, 0.35);
 }
 
-.meanings li {
+.meanings {
     font-size: clamp(0.85rem, 2.2vw, 1rem);
     font-weight: 300;
     color: #c8b99a;
