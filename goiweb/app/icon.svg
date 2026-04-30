@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <radialGradient id="bg" cx="30%" cy="40%" r="70%">
+      <stop offset="0%" stop-color="#1e1a12"/>
+      <stop offset="100%" stop-color="#0e0d0b"/>
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="4" fill="url(#bg)"/>
+
+  <!-- Subtle border -->
+  <rect width="32" height="32" rx="4" fill="none" stroke="rgba(200,185,154,0.18)" stroke-width="1"/>
+
+  <!-- 語 kanji - using foreignObject to render the actual Unicode character with system fonts -->
+  <text
+    x="16"
+    y="23"
+    text-anchor="middle"
+    font-family="'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', 'MS Mincho', serif"
+    font-size="20"
+    font-weight="600"
+    fill="#c8b99a"
+    letter-spacing="0"
+  >語</text>
+</svg>
